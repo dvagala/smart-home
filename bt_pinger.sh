@@ -22,8 +22,8 @@ is_iphone_nearby="no"
 
 i=0
 sumed_rssi=0
-buffer_size=5
-tresh=-2
+buffer_size=3
+tresh=-20
 last_mqtt_msg=""
 try_to_connect_attempts=0
 
@@ -61,7 +61,8 @@ do
 		send_mqtt "no"
 	    fi
 
-	   continue
+	    sleep 0.2
+	    continue
     fi
 
     try_to_connect_attempts=0
@@ -82,7 +83,7 @@ do
 	    fi
     fi
 
-    sleep .2
+    sleep 2
 
     i=$(($i + 1))
 done
