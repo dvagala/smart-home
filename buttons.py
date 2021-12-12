@@ -49,7 +49,7 @@ button6 = Button(7)
 def send_mqtt_last_active():
     client.publish("bedroom/mqtt-buttons/last-active", datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
     print("sent mqtt last active")
-    t = Timer(600.0, send_mqtt_last_active)
+    t = Timer(60.0*60.0, send_mqtt_last_active)
     t.start()
 
 client = connect_mqtt()
