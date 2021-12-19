@@ -36,13 +36,13 @@ check_frequency_if_away=1 # seconds
 send_mqtt () {
     is_iphone_nearby="$1"
     if [ "$last_mqtt_msg" != $is_iphone_nearby ]; then
-	last_mqtt_msg=$is_iphone_nearby
-	mosquitto_pub -q 1 -h homeassistant.local -t "bedroom/dominik-iphone/present" -u mqttuser -P XX7eEKDDbVUAN4 -m $is_iphone_nearby
-	mosquitto_pub -q 1 -h homeassistant.local -t "bedroom/mqtt-sensor/last-active" -u mqttuser -P XX7eEKDDbVUAN4 -m "$(date +"%d-%m-%Y %H:%M:%S")"
+        last_mqtt_msg=$is_iphone_nearby
+        mosquitto_pub -q 1 -h homeassistant.local -t "bedroom/dominik-iphone/present" -u mqttuser -P XX7eEKDDbVUAN4 -m $is_iphone_nearby
+        mosquitto_pub -q 1 -h homeassistant.local -t "bedroom/mqtt-sensor/last-active" -u mqttuser -P XX7eEKDDbVUAN4 -m "$(date +"%d-%m-%Y %H:%M:%S")"
         echo "$(date +"%d-%m-%Y %H:%M:%S") $avg_rssi - $is_iphone_nearby sending to mqtt"
-	sleep 4
+        sleep 4
     else
-        echo "$(date +"%d-%m-%Y %H:%M:%S") $avg_rssi - $is_iphone_nearby"
+        echo "$(date +"%d-%m-%Y %H:%M:%S") $avg_rssi - $is_iphone_nearby still same value, thus not sending mqtt"
     fi
 }
 
@@ -68,13 +68,12 @@ do
         echo "trying to connect..."
         sudo hcitool cc $mac  2> /dev/null
 	    continue
-    else
-        echo "getting rssi"
     fi
 
     try_to_connect_attempts=0
 
     rssi=$(echo "$bt" | rev | cut -d ' ' -f 1 | rev)
+    echo "got rssi $rssi"
     sumed_rssi=$(( $sumed_rssi + $rssi))
 
     if [[ $i -ge $buffer_size ]]; then
