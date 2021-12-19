@@ -2,16 +2,18 @@ from gpiozero import Button
 from paho.mqtt import client as mqtt_client
 import random
 import time
-import sys
 from datetime import datetime
 from threading import Timer
 
 broker = 'homeassistant.local'
 port = 1883
 topic = "bedroom/buttons-pressed/"
+topic_long_press = "bedroom/buttons-long-pressed/"
 client_id = f"python-mqtt-{random.randint(0, 1000)}"
 username = 'mqttuser'
 password = 'XX7eEKDDbVUAN4'
+
+long_press_duration = 0.15
 
 
 def connect_mqtt():
@@ -26,8 +28,11 @@ def connect_mqtt():
     client.connect(broker, port)
     return client
 
-def publish(button_number):
-    full_topic = f"{topic}{str(button_number)}"
+def publish(button_number, is_long_press = False):
+    if is_long_press:
+        full_topic = f"{topic_long_press}{str(button_number)}"
+    else:
+        full_topic = f"{topic}{str(button_number)}"
     result = client.publish(full_topic, "")
     status = result[0]
     if status == 0:
@@ -49,8 +54,8 @@ button6 = Button(7)
 def send_mqtt_last_active():
     client.publish("bedroom/mqtt-buttons/last-active", datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
     print("sent mqtt last active")
-    t = Timer(60.0*60.0, send_mqtt_last_active)
-    t.start()
+    t = Timer(2.0, send_mqtt_last_active)
+    t.start() 
 
 client = connect_mqtt()
 client.loop_start()
@@ -60,17 +65,41 @@ send_mqtt_last_active()
 
 while True:
     if button1.is_pressed:
-        publish(1)
+        time.sleep(long_press_duration)
+        if button1.is_pressed:
+            publish(1, is_long_press=True)
+        else:
+            publish(1, is_long_press=False)
     elif button2.is_pressed:
-        publish(2)
+        time.sleep(long_press_duration)
+        if button2.is_pressed:
+            publish(2, is_long_press=True)
+        else:
+            publish(2, is_long_press=False)
     elif button3.is_pressed:
-        publish(3)
+        time.sleep(long_press_duration)
+        if button3.is_pressed:
+            publish(3, is_long_press=True)
+        else:
+            publish(3, is_long_press=False)
     elif button4.is_pressed:
-        publish(4)
+        time.sleep(long_press_duration)
+        if button4.is_pressed:
+            publish(4, is_long_press=True)
+        else:
+            publish(4, is_long_press=False)
     elif button5.is_pressed:
-        publish(5)
+        time.sleep(long_press_duration)
+        if button5.is_pressed:
+            publish(5, is_long_press=True)
+        else:
+            publish(5, is_long_press=False)
     elif button6.is_pressed:
-        publish(6)
+        time.sleep(long_press_duration)
+        if button6.is_pressed:
+            publish(6, is_long_press=True)
+        else:
+            publish(6, is_long_press=False)
     time.sleep(0.1)
 
 
