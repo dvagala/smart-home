@@ -23,9 +23,12 @@ is_iphone_nearby="no"
 i=0
 sumed_rssi=0
 buffer_size=3
-tresh=-20
+tresh=-28
 last_mqtt_msg=""
 try_to_connect_attempts=0
+
+check_frequency_if_home=20 # seconds
+check_frequency_if_away=1 # seconds
 
 
 
@@ -45,24 +48,28 @@ send_mqtt () {
 
 
 
-
-
-
 while true
 do
     bt=$(hcitool rssi $mac 2> /dev/null)
     if [ "$bt" == "" ]; then
-            sudo hcitool cc $mac  2> /dev/null
+        try_to_connect_attempts=$(($try_to_connect_attempts + 1))
 
-            try_to_connect_attempts=$(($try_to_connect_attempts + 1))
-
-	    if [[ $try_to_connect_attempts -ge 4 ]]; then
+	    if [[ $try_to_connect_attempts -ge 10 ]]; then
 	        echo "couldnt connect to phone, dominik must be gone"
-		send_mqtt "no"
+            send_mqtt "no"
 	    fi
 
-	    sleep 0.2
+        if [ "$last_mqtt_msg" == "yes" ]; then
+            sleep $check_frequency_if_home
+        else
+            sleep $check_frequency_if_away
+        fi
+
+        echo "trying to connect..."
+        sudo hcitool cc $mac  2> /dev/null
 	    continue
+    else
+        echo "getting rssi"
     fi
 
     try_to_connect_attempts=0
@@ -83,7 +90,13 @@ do
 	    fi
     fi
 
-    sleep 2
+
+    if [ "$last_mqtt_msg" == "yes" ]; then
+        sleep $check_frequency_if_home
+    else
+        sleep $check_frequency_if_away
+    fi
+
 
     i=$(($i + 1))
 done
