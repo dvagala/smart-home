@@ -1,13 +1,20 @@
 #!/bin/sh
 
 
+set -e
+
 
 
 
 
 # Set Parameters
-#mqttserverip='homeassistant.local'
-mqttserverip="$HA_IP"
+
+if [ -z $HA_IP ]; then
+	mqttserverip="192.168.1.101"
+else
+	mqttserverip="$HA_IP"
+fi
+
 mqtttopic='home/sensors/presence/iphone'
 messagefound='On'
 messagenotfound='Off'
@@ -35,6 +42,7 @@ send_mqtt () {
     is_iphone_nearby="$1"
     if [ "$last_mqtt_msg" != $is_iphone_nearby ]; then
         last_mqtt_msg=$is_iphone_nearby
+	
         mosquitto_pub -q 1 -h "$mqttserverip" -t "bedroom/dominik-iphone/present" -u mqttuser -P XX7eEKDDbVUAN4 -m $is_iphone_nearby
 	mqtt_return=$?
         mosquitto_pub -q 1 -h "$mqttserverip" -t "bedroom/mqtt-sensor/last-active" -u mqttuser -P XX7eEKDDbVUAN4 -m "$(date +"%d-%m-%Y %H:%M:%S")"
@@ -49,7 +57,9 @@ send_mqtt () {
 
 while true
 do
+    set +e
     bt=$(hcitool rssi $mac 2> /dev/null)
+    set -e
     rssi=$(echo "$bt" | rev | cut -d ' ' -f 1 | rev)
     echo "got rssi $rssi"
 
