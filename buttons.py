@@ -49,6 +49,9 @@ button3 = Button(4)
 button4 = Button(5)
 button5 = Button(6)
 button6 = Button(7)
+button7 = Button(8)
+button8 = Button(9)
+button9 = Button(10)
 
 
 def send_mqtt_last_active():
@@ -56,6 +59,9 @@ def send_mqtt_last_active():
     print("sent mqtt last active")
     t = Timer(2.0, send_mqtt_last_active)
     t.start() 
+
+
+time.sleep(13)
 
 client = connect_mqtt()
 client.loop_start()
@@ -65,41 +71,51 @@ send_mqtt_last_active()
 
 while True:
     if button1.is_pressed:
+        publish(1, is_long_press=False)
         time.sleep(long_press_duration)
         if button1.is_pressed:
             publish(1, is_long_press=True)
-        else:
-            publish(1, is_long_press=False)
     elif button2.is_pressed:
+        publish(2, is_long_press=False)
         time.sleep(long_press_duration)
         if button2.is_pressed:
             publish(2, is_long_press=True)
-        else:
-            publish(2, is_long_press=False)
     elif button3.is_pressed:
+        publish(3, is_long_press=False)
         time.sleep(long_press_duration)
         if button3.is_pressed:
             publish(3, is_long_press=True)
-        else:
-            publish(3, is_long_press=False)
     elif button4.is_pressed:
+        publish(4, is_long_press=False)
         time.sleep(long_press_duration)
         if button4.is_pressed:
             publish(4, is_long_press=True)
-        else:
-            publish(4, is_long_press=False)
     elif button5.is_pressed:
+        publish(5, is_long_press=False)
         time.sleep(long_press_duration)
         if button5.is_pressed:
             publish(5, is_long_press=True)
-        else:
-            publish(5, is_long_press=False)
     elif button6.is_pressed:
+        publish(6, is_long_press=False)
         time.sleep(long_press_duration)
         if button6.is_pressed:
             publish(6, is_long_press=True)
-        else:
-            publish(6, is_long_press=False)
+    elif button7.is_pressed:
+        publish(7, is_long_press=False)
+        time.sleep(long_press_duration)
+        if button7.is_pressed:
+            publish(7, is_long_press=True)
+    elif button8.is_pressed:
+        publish(8, is_long_press=False)
+        time.sleep(long_press_duration)
+        if button8.is_pressed:
+            publish(8, is_long_press=True)
+    elif button9.is_pressed:
+        publish(9, is_long_press=False)
+        time.sleep(long_press_duration)
+        if button9.is_pressed:
+            publish(9, is_long_press=True)
+
     time.sleep(0.1)
 
 

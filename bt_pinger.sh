@@ -20,11 +20,11 @@ sudo hcitool cc $mac 2> /dev/null
 
 is_iphone_nearby="no"
 
-tresh=-28
+tresh=-35
 last_mqtt_msg=""
 try_to_connect_attempts=0
 
-check_frequency_if_home=30 # seconds
+check_frequency_if_home=20 # seconds
 check_frequency_if_away=1 # seconds
 
 
@@ -34,8 +34,9 @@ send_mqtt () {
     if [ "$last_mqtt_msg" != $is_iphone_nearby ]; then
         last_mqtt_msg=$is_iphone_nearby
         mosquitto_pub -q 1 -h homeassistant.local -t "bedroom/dominik-iphone/present" -u mqttuser -P XX7eEKDDbVUAN4 -m $is_iphone_nearby
+	mqtt_return=$?
         mosquitto_pub -q 1 -h homeassistant.local -t "bedroom/mqtt-sensor/last-active" -u mqttuser -P XX7eEKDDbVUAN4 -m "$(date +"%d-%m-%Y %H:%M:%S")"
-        echo "$(date +"%d-%m-%Y %H:%M:%S") $avg_rssi - $is_iphone_nearby sending to mqtt"
+        echo "$(date +"%d-%m-%Y %H:%M:%S") $avg_rssi - $is_iphone_nearby sending to mqtt, return code:$mqtt_return"
         sleep 4
     else
         echo "$(date +"%d-%m-%Y %H:%M:%S") $avg_rssi - $is_iphone_nearby still same value, thus not sending mqtt"
