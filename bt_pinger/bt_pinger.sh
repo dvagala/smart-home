@@ -33,7 +33,7 @@ tresh=-35
 last_mqtt_msg=""
 try_to_connect_attempts=0
 
-check_frequency_if_home=1 # seconds
+check_frequency_if_home=20 # seconds
 check_frequency_if_away=1 # seconds
 
 
