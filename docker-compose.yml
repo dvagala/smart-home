@@ -1,0 +1,9 @@
+services:
+  bt_pinger_service:
+    image: bt_pinger
+    restart: always
+    network_mode: 'host'
+    privileged: true
+    environment:
+      - HA_IP=192.168.1.101
+

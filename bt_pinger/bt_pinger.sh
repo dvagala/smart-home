@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 
 
@@ -6,17 +6,19 @@
 
 
 # Set Parameters
-mqttserverip='homeassistant.local'
+#mqttserverip='homeassistant.local'
+mqttserverip="$HA_IP"
 mqtttopic='home/sensors/presence/iphone'
 messagefound='On'
 messagenotfound='Off'
 
+echo "Starting BT pinger, mqttserverip: $mqttserverip" 
 
 
 
 mac="5C:70:17:E3:DC:6F"
 
-sudo hcitool cc $mac 2> /dev/null
+hcitool cc $mac 2> /dev/null
 
 is_iphone_nearby="no"
 
@@ -24,7 +26,7 @@ tresh=-35
 last_mqtt_msg=""
 try_to_connect_attempts=0
 
-check_frequency_if_home=20 # seconds
+check_frequency_if_home=1 # seconds
 check_frequency_if_away=1 # seconds
 
 
@@ -33,9 +35,9 @@ send_mqtt () {
     is_iphone_nearby="$1"
     if [ "$last_mqtt_msg" != $is_iphone_nearby ]; then
         last_mqtt_msg=$is_iphone_nearby
-        mosquitto_pub -q 1 -h homeassistant.local -t "bedroom/dominik-iphone/present" -u mqttuser -P XX7eEKDDbVUAN4 -m $is_iphone_nearby
+        mosquitto_pub -q 1 -h "$mqttserverip" -t "bedroom/dominik-iphone/present" -u mqttuser -P XX7eEKDDbVUAN4 -m $is_iphone_nearby
 	mqtt_return=$?
-        mosquitto_pub -q 1 -h homeassistant.local -t "bedroom/mqtt-sensor/last-active" -u mqttuser -P XX7eEKDDbVUAN4 -m "$(date +"%d-%m-%Y %H:%M:%S")"
+        mosquitto_pub -q 1 -h "$mqttserverip" -t "bedroom/mqtt-sensor/last-active" -u mqttuser -P XX7eEKDDbVUAN4 -m "$(date +"%d-%m-%Y %H:%M:%S")"
         echo "$(date +"%d-%m-%Y %H:%M:%S") $avg_rssi - $is_iphone_nearby sending to mqtt, return code:$mqtt_return"
         sleep 4
     else
@@ -73,6 +75,6 @@ do
 
     if [ "$bt" == "" ]; then
         echo "trying to connect..."
-        sudo hcitool cc $mac  2> /dev/null
+        hcitool cc $mac  2> /dev/null
     fi
 done

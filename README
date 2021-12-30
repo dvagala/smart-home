@@ -1,0 +1,3 @@
+# create docker images
+
+docker build -t bt_pinger ./bt_pinger/
