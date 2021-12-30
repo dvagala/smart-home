@@ -1,6 +1,0 @@
-# create docker images
-./bt_pinger/build.sh
-./rpi_buttons/build.sh
-
-# deploy to containers
-./start_docker_compose.sh
