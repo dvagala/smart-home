@@ -4,8 +4,18 @@ import random
 import time
 from datetime import datetime
 from threading import Timer
+import sys
 
-broker = 'homeassistant.local'
+print('strating smart buttons')
+if len(sys.argv) >= 2 and sys.argv[1] != "":
+    broker = sys.argv[1]
+else:
+    broker = '192.168.1.101'
+
+print('Argument List:', str(sys.argv))
+print('mqqt broker IP: ', broker)
+
+#broker = 'homeassistant.local'
 port = 1883
 topic = "bedroom/buttons-pressed/"
 topic_long_press = "bedroom/buttons-long-pressed/"
@@ -39,7 +49,7 @@ def publish(button_number, is_long_press = False):
         print(f"succesfully send mqtt to {full_topic}", datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
     else:
         print(f"failed send mqtt to {full_topic}", datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
-    time.sleep(0.4)
+    time.sleep(0.3)
 
 
 
@@ -61,10 +71,9 @@ def send_mqtt_last_active():
     t.start() 
 
 
-time.sleep(13)
-
 client = connect_mqtt()
 client.loop_start()
+print('mqtt connected')
 
 send_mqtt_last_active()
 

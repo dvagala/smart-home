@@ -1,3 +1,5 @@
 # create docker images
 
-docker build -t bt_pinger ./bt_pinger/
+./bt_pinger/build.sh
+./rpi_buttons/build.sh
+

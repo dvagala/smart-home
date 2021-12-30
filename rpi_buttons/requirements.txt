@@ -1,0 +1,4 @@
+gpiozero==1.6.2
+#RPi.GPIO==0.7.0
+RPi.GPIO==0.7.1a4
+paho-mqtt==1.6.1
