@@ -1,3 +1,4 @@
+version: "3"
 services:
   rpi_buttons_service:
     image: rpi_buttons
