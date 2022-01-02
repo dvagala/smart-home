@@ -16,3 +16,9 @@ sudo usermod -aG docker ${USER}
 ./build_rpi_buttons.sh
 
 ./start_docker_compose.sh   # this will keep the containers running even after reboot
+
+
+# Optional
+if you want to disable status led on rpi zero, put thison /etc/rc.local
+
+echo none | sudo tee /sys/class/leds/led0/trigger # LED lit
